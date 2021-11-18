@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import TabButton from "./tab-button";
 import { RiSettings5Fill, RiSettings5Line } from "react-icons/ri";
 import { AiFillMessage, AiOutlineMessage } from "react-icons/ai";
@@ -19,7 +19,7 @@ export default function Layout({ children }: Props) {
       <div className='flex h-5/6 w-10/12 bg-gray rounded-4xl p-8'>
         <div className='bg-primary h-full rounded-3xl flex flex-col items-center justify-between'>
           <div className='flex flex-col items-center'>
-            <div className='rounded-full bg-white w-16 h-16 flex items-center justify-center overflow-hidden m-6 mb-20'>
+            <div className='rounded-full w-16 h-16 flex items-center justify-center overflow-hidden m-6 mb-20'>
               <img
                 className='w-14'
                 src='src/assets/avatar-pro.png'
@@ -60,7 +60,7 @@ export default function Layout({ children }: Props) {
             <GoSignOut className='w-8 h-8 text-white my-6' />
           </div>
         </div>
-        <div className='bg-gray'>{children}</div>
+        <div className='flex-1'>{children}</div>
       </div>
     </div>
   );
