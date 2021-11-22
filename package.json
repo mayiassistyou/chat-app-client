@@ -7,11 +7,16 @@
     "serve": "vite preview"
   },
   "dependencies": {
+    "axios": "^0.24.0",
     "clsx": "^1.1.1",
+    "jwt-decode": "^3.1.2",
+    "query-string": "^7.0.1",
     "react": "^17.0.0",
     "react-dom": "^17.0.0",
+    "react-hook-form": "^7.20.1",
     "react-icons": "^4.3.1",
-    "react-location": "^3.1.13"
+    "react-router-dom": "^6.0.2",
+    "sweetalert2": "^11.2.0"
   },
   "devDependencies": {
     "@types/node": "^16.11.7",

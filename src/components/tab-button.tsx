@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import React from "react";
-import { Link } from "react-location";
+import { Link } from "react-router-dom";
 
 interface Props {
   iconActive: React.ReactNode;
@@ -14,7 +14,6 @@ export default function TabButton(props: Props) {
 
   return (
     <Link to={path} className={clsx("py-4 w-full relative mb-4")}>
-      {/* <div className={clsx("py-4 w-full relative mb-4")}> */}
       <div className='text-white flex justify-center relative z-10'>
         {currentPath === path ? iconActive : iconInactive}
       </div>

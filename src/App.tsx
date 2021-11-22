@@ -1,23 +1,14 @@
-import "./App.scss";
-import { ReactLocation, Router } from "react-location";
-import HomePage from "./pages/home";
-import MessagePage from "./pages/message";
-import NotificationPage from "./pages/notification";
-import SettingPage from "./pages/setting";
-
-const location = new ReactLocation();
+import { BrowserRouter } from "react-router-dom";
+import { UserProvider } from "./contexts/user";
+import AppRoutes from "./Routes";
 
 function App() {
   return (
-    <Router
-      location={location}
-      routes={[
-        { path: "/", element: <HomePage /> },
-        { path: "/message", element: <MessagePage /> },
-        { path: "/notification", element: <NotificationPage /> },
-        { path: "/setting", element: <SettingPage /> },
-      ]}
-    />
+    <UserProvider>
+      <BrowserRouter>
+        <AppRoutes />
+      </BrowserRouter>
+    </UserProvider>
   );
 }
 

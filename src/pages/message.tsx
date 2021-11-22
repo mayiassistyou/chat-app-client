@@ -4,15 +4,22 @@ import Layout from "../components/layout";
 import { BiSearch } from "react-icons/bi";
 import AppBox from "../components/app-box";
 import PersonItem from "../components/person-item";
+import { useForm } from "react-hook-form";
 
 export default function MessagePage() {
+  const { register } = useForm();
   return (
     <Layout>
       <div className='px-4 h-full'>
         <div className='flex h-full justify-between'>
           {/* PERSON LIST */}
           <div className='w-96 flex flex-col mr-4'>
-            <AppInput icon={<BiSearch />} placeholder='Search' />
+            <AppInput
+              icon={<BiSearch />}
+              name='search'
+              register={register}
+              placeholder='Search'
+            />
             <AppBox className='mt-4 flex-1'>
               <h2 className='font-semibold text-xl'>Person</h2>
               <PersonItem hasSeen />
