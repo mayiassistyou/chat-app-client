@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { BiSearch } from "react-icons/bi";
 import messageApi from "../api/message";
-import userApi from "../api/user";
 import AppBox from "../components/app-box";
 import AppInput from "../components/app-input";
 import Layout from "../components/layout";

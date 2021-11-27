@@ -2,7 +2,7 @@ import axios, { AxiosInstance } from 'axios';
 import queryString from 'query-string';
 
 const axiosClient: AxiosInstance = axios.create({
-    baseURL: 'http://localhost:3333/api',
+    baseURL: 'https://chat-choichoi-app.herokuapp.com/api',
     headers: {
         'Content-Type': 'application/json',
     },
