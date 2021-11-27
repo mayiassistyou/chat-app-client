@@ -32,7 +32,7 @@ export default function MessagePage() {
   const socket = useRef<any>();
 
   useEffect(() => {
-    socket.current = io("ws://chat-choichoi-socket.herokuapp.com/");
+    socket.current = io("https://chat-choichoi-socket.herokuapp.com/");
     socket.current.on("getMessage", (data: any) => {
       setArrivalMessage({
         conversationId: currentChat?._id as string,
@@ -110,7 +110,6 @@ export default function MessagePage() {
         const response = await messageApi.sendMessage(message);
         messageContent && setMessageContent([...messageContent, response.data]);
         setValue("message", "");
-        console.log(messageContent);
       } catch (error) {
         console.log(error);
       }
@@ -145,6 +144,7 @@ export default function MessagePage() {
                 );
                 return (
                   <PersonItem
+                    key={conversation._id}
                     friendId={friendId[0]}
                     onClick={() => {
                       setCurrentChat(conversation);
