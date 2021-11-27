@@ -32,7 +32,12 @@ export default function MessagePage() {
   const socket = useRef<any>();
 
   useEffect(() => {
-    socket.current = io("https://chat-choichoi-socket.herokuapp.com/");
+    socket.current = io("https://chat-choichoi-socket.herokuapp.com/", {
+      withCredentials: true,
+      extraHeaders: {
+        "my-custom-header": "abcd",
+      },
+    });
     socket.current.on("getMessage", (data: any) => {
       setArrivalMessage({
         conversationId: currentChat?._id as string,
