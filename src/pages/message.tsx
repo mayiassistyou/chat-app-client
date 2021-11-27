@@ -31,8 +31,11 @@ export default function MessagePage() {
 
   const socket = useRef<any>();
 
+  // const url = "https://chat-choichoi-socket.herokuapp.com/";
+  const url = "http://localhost:8900";
+
   useEffect(() => {
-    socket.current = io("https://chat-choichoi-socket.herokuapp.com");
+    socket.current = io(url);
     socket.current.on("getMessage", (data: any) => {
       setArrivalMessage({
         conversationId: currentChat?._id as string,
@@ -107,9 +110,13 @@ export default function MessagePage() {
 
     const sendMessage = async () => {
       try {
-        const response = await messageApi.sendMessage(message);
-        messageContent && setMessageContent([...messageContent, response.data]);
+        messageContent &&
+          setMessageContent([
+            ...messageContent,
+            { ...message, createdAt: Date.now() },
+          ]);
         setValue("message", "");
+        await messageApi.sendMessage(message);
       } catch (error) {
         console.log(error);
       }
