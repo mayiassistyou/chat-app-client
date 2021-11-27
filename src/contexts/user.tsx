@@ -1,15 +1,14 @@
-import { AxiosResponse } from "axios";
 import jwtDecode from "jwt-decode";
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import userApi from "../api/user";
 import { IUser } from "../interface";
 
 interface IContext {
   user: IUser | undefined;
-  setUser?: React.Dispatch<React.SetStateAction<IUser>> | undefined;
   getUser: () => Promise<void>;
   logout: () => void;
+  isLoading: boolean;
 }
 
 const UserContext = createContext<IContext>(undefined as any);
@@ -23,25 +22,34 @@ export function UserProvider(props: Props) {
     // Get token from localStorage
     const token = localStorage.getItem("token");
 
-    // User is undefined if there's no token
     if (!token) return undefined;
 
-    // Decode if there's token
     const decoded: IUser = jwtDecode(token);
 
-    // Set id and role as user data
-    // => Will re-render routes and push to / (user role's homepage)
     return {
       _id: decoded._id,
       name: decoded.name,
     } as IUser;
   });
 
+  // useEffect(() => {
+  //   const token = localStorage.getItem("token");
+
+  //   if (!token) return;
+
+  //   getUser();
+  // });
+
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
   const getUser = async () => {
     try {
+      setIsLoading(true);
       const user = await userApi.getProfile();
       setUser(user.data);
+      setIsLoading(false);
     } catch (error) {
+      setIsLoading(false);
       console.log(error);
     }
   };
@@ -57,15 +65,17 @@ export function UserProvider(props: Props) {
       confirmButtonText: "Yes!",
     }).then((result) => {
       if (result.isConfirmed) {
+        setIsLoading(true);
         setUser(undefined);
         localStorage.removeItem("token");
+        setIsLoading(false);
         Swal.fire("Success!", "Logout successfully!", "success");
       }
     });
   };
 
   return (
-    <UserContext.Provider value={{ user, getUser, logout }}>
+    <UserContext.Provider value={{ user, getUser, logout, isLoading }}>
       {props.children}
     </UserContext.Provider>
   );

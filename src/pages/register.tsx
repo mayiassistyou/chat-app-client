@@ -48,7 +48,10 @@ export default function RegisterPage() {
           </div>
           <div className='text-center'>
             Already have an account?
-            <Link to='/' className='text-primary hover:text-primary-dark ml-1'>
+            <Link
+              to='/login'
+              className='text-primary hover:text-primary-dark ml-1'
+            >
               Login
             </Link>
           </div>
