@@ -8,6 +8,26 @@
   .placeholder-semibold::placeholder {
     font-weight: 700;
   }
+  .own-chat-item::after {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-bottom: 28px solid #6001e1;
+    border-right: 36px solid transparent;
+    bottom: 0;
+    right: -20px;
+  }
+  .friend-chat-item::before {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-bottom: 28px solid #f1f4fa;
+    border-left: 36px solid transparent;
+    bottom: 0;
+    left: -20px;
+  }
 }
 
 * {
@@ -17,8 +37,8 @@
 
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+  font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
+    "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

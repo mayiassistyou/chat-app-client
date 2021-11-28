@@ -16,16 +16,20 @@ export default function Sidebar() {
 
   return (
     <div className='bg-primary h-full rounded-3xl flex flex-col items-center justify-between'>
-      <div className='flex flex-col items-center'>
-        <div className='rounded-full border border-white w-16 h-16 flex items-center justify-center overflow-hidden m-6 mb-20'>
+      <div className='flex flex-col items-center overflow-auto'>
+        <div className='w-16 h-16 m-6 mb-20'>
           {user?.avatar ? (
             <img
-              className='w-14'
+              className='rounded-full border-white'
               src='src/assets/avatar-pro.png'
               alt='avatar'
             />
           ) : (
-            <img className='w-18' src={defaultAvatar} alt='avatar' />
+            <img
+              className='rounded-full border-white'
+              src={defaultAvatar}
+              alt='avatar'
+            />
           )}
         </div>
         <TabButton

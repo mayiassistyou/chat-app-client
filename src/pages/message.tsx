@@ -6,21 +6,24 @@ import AppBox from "../components/app-box";
 import AppInput from "../components/app-input";
 import Layout from "../components/layout";
 import LoadingOverlay from "../components/loading-overlay";
-import MessageItem from "../components/message-item";
 import PersonItem from "../components/person-item";
 import { useUser } from "../contexts/user";
-import { IConversation, IMessage } from "../interface";
+import { IConversation, IMessage, IUser } from "../interface";
 import io from "socket.io-client";
+import MessageContainer from "../components/message-container";
+import userApi from "../api/user";
 
 export default function MessagePage() {
   const { register, handleSubmit, setValue } = useForm();
   const { user } = useUser();
-  const scrollRef = useRef<any>();
 
   const [conversationList, setConversationList] = useState<
     IConversation[] | undefined
   >([]);
   const [currentChat, setCurrentChat] = useState<IConversation | undefined>(
+    undefined
+  );
+  const [currentFriend, setCurrentfriend] = useState<IUser | undefined>(
     undefined
   );
   const [messageContent, setMessageContent] = useState<IMessage[] | undefined>(
@@ -31,11 +34,10 @@ export default function MessagePage() {
 
   const socket = useRef<any>();
 
-  // const url = "https://chat-choichoi-socket.herokuapp.com/";
-  const url = "http://localhost:8900";
-
   useEffect(() => {
-    socket.current = io(url);
+    socket.current = io("localhost:8900", {
+      transports: ["websocket"],
+    });
     socket.current.on("getMessage", (data: any) => {
       setArrivalMessage({
         conversationId: currentChat?._id as string,
@@ -52,7 +54,7 @@ export default function MessagePage() {
       currentChat?.members.includes(arrivalMessage.senderId) &&
       setMessageContent((prevState) => {
         if (!prevState) return [arrivalMessage];
-        return [...prevState, arrivalMessage];
+        return [arrivalMessage, ...prevState];
       });
   }, [arrivalMessage, currentChat]);
 
@@ -65,6 +67,7 @@ export default function MessagePage() {
 
   // load conversation list
   useEffect(() => {
+    setIsLoading(true);
     const getConversation = async () => {
       try {
         setIsLoading(true);
@@ -77,13 +80,23 @@ export default function MessagePage() {
       }
     };
     getConversation();
+    setIsLoading(false);
   }, [user]);
 
   // load message on selected conversation
   useEffect(() => {
+    const id = currentChat?.members.find((member) => member !== user?._id);
+
+    const getFriendInfo = async () => {
+      const response = await userApi.getFriend(id as string);
+      setCurrentfriend(response.data);
+    };
+
+    getFriendInfo();
+
     const getMessage = async () => {
       const response = await messageApi.getMessages(currentChat?._id as string);
-      setMessageContent(response.data);
+      setMessageContent(response.data.messages);
     };
     getMessage();
   }, [currentChat]);
@@ -112,8 +125,8 @@ export default function MessagePage() {
       try {
         messageContent &&
           setMessageContent([
-            ...messageContent,
             { ...message, createdAt: Date.now() },
+            ...messageContent,
           ]);
         setValue("message", "");
         await messageApi.sendMessage(message);
@@ -124,11 +137,6 @@ export default function MessagePage() {
 
     sendMessage();
   };
-
-  // scroll to lastest message
-  useEffect(() => {
-    scrollRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messageContent]);
 
   return (
     <Layout>
@@ -146,17 +154,17 @@ export default function MessagePage() {
             <AppBox className='mt-4 flex-1'>
               <h2 className='font-semibold text-xl'>Person</h2>
               {conversationList?.map((conversation) => {
-                const friendId = conversation.members.filter(
-                  (mem: string) => mem !== user?._id
-                );
+                const id =
+                  user &&
+                  conversation.members.find((member) => member !== user._id);
                 return (
                   <PersonItem
                     key={conversation._id}
-                    friendId={friendId[0]}
                     onClick={() => {
                       setCurrentChat(conversation);
                     }}
                     isSelected={currentChat?._id === conversation._id}
+                    friendId={id as string}
                   />
                 );
               })}
@@ -165,27 +173,12 @@ export default function MessagePage() {
 
           {/* CHAT BOX */}
           <div className='h-full flex-1'>
-            <AppBox>
-              <div className='h-full flex flex-col justify-between'>
-                <div className='overflow-auto'>
-                  {messageContent?.map((msg, index) => {
-                    return (
-                      <div key={index} ref={scrollRef}>
-                        <MessageItem
-                          text={msg.text}
-                          isOwned={msg.senderId === user?._id}
-                        />
-                      </div>
-                    );
-                  })}
-                </div>
-
-                <form onSubmit={handleSubmit(onSendMessage)} className='flex'>
-                  <input {...register("message")}></input>
-                  <button type='submit'>send</button>
-                </form>
-              </div>
-            </AppBox>
+            <MessageContainer
+              messages={messageContent}
+              onSubmit={handleSubmit(onSendMessage)}
+              register={register}
+              friendInfo={currentFriend as IUser}
+            />
           </div>
         </div>
       </div>
