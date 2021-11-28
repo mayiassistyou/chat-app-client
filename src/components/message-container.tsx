@@ -66,7 +66,7 @@ export default function MessageContainer(props: Props) {
               type='textarea'
               autoComplete='off'
               {...register("message")}
-              className='resize-none outline-none flex-1 bg-gray rounded-2xl py-4 px-6 font-medium placeholder-semibold placeholder-gray-dark mr-2 text-opacity-10'
+              className='resize-none outline-none flex-1 bg-gray rounded-2xl py-4 px-6 placeholder-semibold placeholder-gray-dark mr-2 text-opacity-10'
               placeholder='Type your message here...'
             />
             <button
