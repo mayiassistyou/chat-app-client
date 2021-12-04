@@ -6,6 +6,9 @@ const userApi = {
     },
     getFriend: (id: string) => {
         return axiosClient.get(`/user?id=${id}`, )
+    },
+    searchUser: (name: string) => {
+        return axiosClient.get('/user/search', {params: {name}})
     }
 }
 

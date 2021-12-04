@@ -13,6 +13,7 @@ interface Props {
     [x: string]: any;
   };
   errorLabel?: string;
+  onChange?: any;
 }
 
 export default function AppInput(props: Props) {
@@ -25,6 +26,7 @@ export default function AppInput(props: Props) {
     placeholder,
     errors,
     errorLabel,
+    onChange,
   } = props;
 
   return (
@@ -37,6 +39,7 @@ export default function AppInput(props: Props) {
             "w-full border-none p-2 pl-10 rounded-2xl focus:outline-primary placeholder-gray-dark placeholder-semibold font-semibold"
           )}
           placeholder={placeholder}
+          onChange={onChange}
         />
         <div className='absolute left-3 top-3'>{icon}</div>
       </div>

@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { HiOutlineMail } from "react-icons/hi";
+import { FiUser } from "react-icons/fi";
 import { RiLockPasswordLine } from "react-icons/ri";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
@@ -10,7 +10,7 @@ import Layout from "../components/layout";
 import { useUser } from "../contexts/user";
 
 interface LoginInput {
-  email: string;
+  username: string;
   password: string;
 }
 
@@ -26,7 +26,7 @@ export default function LoginPage() {
   const onSubmit = (data: LoginInput) => {
     const login = async () => {
       try {
-        const response = await authApi.login(data.email, data.password);
+        const response = await authApi.login(data.username, data.password);
 
         localStorage.setItem("token", response.data);
         getUser();
@@ -49,13 +49,13 @@ export default function LoginPage() {
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className='w-96 mb-4'>
             <AppInput
-              icon={<HiOutlineMail />}
-              name='email'
+              icon={<FiUser />}
+              name='username'
               required
               register={register}
-              placeholder='Email'
+              placeholder='Username'
               errors={errors}
-              errorLabel='Email is required!'
+              errorLabel='Username is required!'
             />
           </div>
           <div className='w-96 mb-4'>

@@ -6,7 +6,6 @@ import { useUser } from "../contexts/user";
 import { IMessage, IUser } from "../interface";
 import AppBox from "./app-box";
 import MessageItem from "./message-item";
-import { format } from "timeago.js";
 interface Props {
   messages: IMessage[] | undefined;
   onSubmit: () => void;
@@ -14,8 +13,6 @@ interface Props {
   friendInfo: IUser;
   isActive: boolean;
 }
-
-// let isActive = true;
 
 export default function MessageContainer(props: Props) {
   const { messages, onSubmit, register, friendInfo, isActive } = props;
