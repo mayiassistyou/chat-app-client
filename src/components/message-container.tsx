@@ -6,17 +6,19 @@ import { useUser } from "../contexts/user";
 import { IMessage, IUser } from "../interface";
 import AppBox from "./app-box";
 import MessageItem from "./message-item";
+import { format } from "timeago.js";
 interface Props {
   messages: IMessage[] | undefined;
   onSubmit: () => void;
   register: UseFormRegister<FieldValues>;
   friendInfo: IUser;
+  isActive: boolean;
 }
 
-let isActive = true;
+// let isActive = true;
 
 export default function MessageContainer(props: Props) {
-  const { messages, onSubmit, register, friendInfo } = props;
+  const { messages, onSubmit, register, friendInfo, isActive } = props;
   const { user } = useUser();
 
   return (
@@ -42,7 +44,7 @@ export default function MessageContainer(props: Props) {
           </div>
           <div className='ml-6'>
             <p className='text-xl font-bold'>{friendInfo?.name}</p>
-            <p className='text-sm'>Active now</p>
+            <p className='text-sm'>{isActive ? "Active now" : "Away"}</p>
           </div>
         </div>
 

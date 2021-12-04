@@ -5,7 +5,6 @@ import messageApi from "../api/message";
 import AppBox from "../components/app-box";
 import AppInput from "../components/app-input";
 import Layout from "../components/layout";
-import LoadingOverlay from "../components/loading-overlay";
 import PersonItem from "../components/person-item";
 import { useUser } from "../contexts/user";
 import { IConversation, IMessage, IUser } from "../interface";
@@ -20,6 +19,7 @@ export default function MessagePage() {
   const [conversationList, setConversationList] = useState<
     IConversation[] | undefined
   >([]);
+  const [onlineUser, setOnlineUser] = useState<any[]>([]);
   const [currentChat, setCurrentChat] = useState<IConversation | undefined>(
     undefined
   );
@@ -30,7 +30,6 @@ export default function MessagePage() {
     []
   );
   const [arrivalMessage, setArrivalMessage] = useState<IMessage | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const socket = useRef<any>();
 
@@ -40,7 +39,7 @@ export default function MessagePage() {
     });
     socket.current.on("getMessage", (data: any) => {
       setArrivalMessage({
-        conversationId: currentChat?._id as string,
+        conversationId: data._id,
         senderId: data.senderId,
         text: data.text,
         createdAt: Date.now(),
@@ -48,7 +47,7 @@ export default function MessagePage() {
     });
   }, []);
 
-  // receied message
+  // received message
   useEffect(() => {
     arrivalMessage &&
       currentChat?.members.includes(arrivalMessage.senderId) &&
@@ -59,28 +58,50 @@ export default function MessagePage() {
   }, [arrivalMessage, currentChat]);
 
   useEffect(() => {
+    setConversationList((prevState: any) => {
+      if (!prevState) return;
+      const newConvesationList = [...prevState];
+
+      const conversation = newConvesationList.find((c) =>
+        c.members.includes(arrivalMessage?.senderId as string)
+      );
+      if (!conversation) return;
+      const index = newConvesationList.findIndex((c) =>
+        c.members.includes(arrivalMessage?.senderId as string)
+      );
+
+      newConvesationList.splice(index, 1);
+      return [
+        {
+          ...conversation,
+          updateTime: Date.now(),
+          lastMessage: arrivalMessage?.text,
+        },
+        ...newConvesationList,
+      ];
+    });
+  }, [arrivalMessage]);
+
+  // get user online
+  useEffect(() => {
     socket.current.emit("addUser", user?._id);
     socket.current.on("getUsers", (users: any) => {
-      console.log(users);
+      setOnlineUser(users);
     });
   }, [user]);
 
   // load conversation list
   useEffect(() => {
-    setIsLoading(true);
     const getConversation = async () => {
       try {
-        setIsLoading(true);
         const response = await messageApi.getConvesations(user?._id as string);
         setConversationList(response.data);
         setCurrentChat(response.data[0]);
-        setIsLoading(false);
       } catch (error) {
         console.log(error);
       }
     };
     getConversation();
-    setIsLoading(false);
   }, [user]);
 
   // load message on selected conversation
@@ -136,11 +157,33 @@ export default function MessagePage() {
     };
 
     sendMessage();
+
+    setConversationList((prevState: any) => {
+      if (!prevState) return;
+      const newConvesationList = [...prevState];
+
+      const conversation = newConvesationList.find((c) =>
+        c.members.includes(receiverId)
+      );
+      if (!conversation) return;
+      const index = newConvesationList.findIndex((c) =>
+        c.members.includes(receiverId)
+      );
+
+      newConvesationList.splice(index, 1);
+      return [
+        {
+          ...conversation,
+          updateTime: Date.now(),
+          lastMessage: data.message,
+        },
+        ...newConvesationList,
+      ];
+    });
   };
 
   return (
     <Layout>
-      <LoadingOverlay show={isLoading} />
       <div className='px-4 h-full'>
         <div className='flex h-full justify-between'>
           {/* PERSON LIST */}
@@ -165,6 +208,8 @@ export default function MessagePage() {
                     }}
                     isSelected={currentChat?._id === conversation._id}
                     friendId={id as string}
+                    time={conversation.updateTime}
+                    lastMessage={conversation.lastMessage}
                   />
                 );
               })}
@@ -178,6 +223,9 @@ export default function MessagePage() {
               onSubmit={handleSubmit(onSendMessage)}
               register={register}
               friendInfo={currentFriend as IUser}
+              isActive={onlineUser.some(
+                (user) => user.userId === currentFriend?._id
+              )}
             />
           </div>
         </div>

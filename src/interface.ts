@@ -8,6 +8,8 @@ export interface IUser {
 export interface IConversation {
     _id: string;
     members: string[];
+    updateTime: number;
+    lastMessage: string;
 }
 
 export interface IMessage {

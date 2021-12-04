@@ -4,8 +4,11 @@ const messageApi = {
     getConvesations: (id: string) => {
         return axiosClient.get(`/conversation/${id}`);
     },
-    getMessages: (id: string) => {
-        return axiosClient.get(`/message/${id}`);
+    getMessages: (conversationId: string) => {
+        return axiosClient.get(`/message/${conversationId}`);
+    },
+    getLastMessage: (conversationId: string) => {
+        return axiosClient.get(`/message/lastmsg/${conversationId}`)
     },
     sendMessage: (message: {conversationId: string, senderId: string, text: string}) => {
         return axiosClient.post('/message', message);
